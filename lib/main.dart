@@ -45,13 +45,14 @@ class _TicketScreenState extends State<TicketScreen>
   void initState() {
     super.initState();
 
-    // Expand / Contract pulse matching original HART recording
+    // Carbon-copy expand/contract pulse from original recording
+    // ~0.9s cycle, scales between full and slightly contracted
     _pulseController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 900),
     )..repeat(reverse: true);
 
-    _pulseAnimation = Tween<double>(begin: 1.0, end: 0.90).animate(
+    _pulseAnimation = Tween<double>(begin: 1.0, end: 0.88).animate(
       CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
     );
 
@@ -282,13 +283,26 @@ class _TicketScreenState extends State<TicketScreen>
                       ),
                       const SizedBox(height: 32),
 
-                      // Animating Expand/Contract Donut Ring
+                      // Carbon-copy Expand/Contract Donut Ring
                       SizedBox(
                         width: 210,
                         height: 210,
                         child: Stack(
                           alignment: Alignment.center,
                           children: [
+                            // Outer light gray ring (visible when blue contracts)
+                            Container(
+                              width: 198,
+                              height: 198,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: const Color(0xFFD0D4DA),
+                                  width: 10,
+                                ),
+                              ),
+                            ),
+                            // Blue ring that expands / contracts
                             ScaleTransition(
                               scale: _pulseAnimation,
                               child: CustomPaint(
@@ -296,7 +310,7 @@ class _TicketScreenState extends State<TicketScreen>
                                 painter: RingPainter(),
                               ),
                             ),
-                            // Center logo
+                            // Center white circle + HART logo
                             Container(
                               width: 96,
                               height: 96,
@@ -306,11 +320,11 @@ class _TicketScreenState extends State<TicketScreen>
                               ),
                               child: Center(
                                 child: Container(
-                                  width: 56,
-                                  height: 56,
+                                  width: 58,
+                                  height: 40,
                                   decoration: BoxDecoration(
                                     color: const Color(0xFF1D3F72),
-                                    borderRadius: BorderRadius.circular(6),
+                                    borderRadius: BorderRadius.circular(5),
                                   ),
                                   child: const Center(
                                     child: Text(
@@ -318,8 +332,8 @@ class _TicketScreenState extends State<TicketScreen>
                                       style: TextStyle(
                                         color: Colors.white,
                                         fontWeight: FontWeight.w900,
-                                        fontSize: 15,
-                                        letterSpacing: -0.5,
+                                        fontSize: 14,
+                                        letterSpacing: -0.4,
                                       ),
                                     ),
                                   ),
