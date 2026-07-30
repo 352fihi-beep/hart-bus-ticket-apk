@@ -1,28 +1,22 @@
-# HART Bus Ticket - Flutter APK
+# HART Bus Ticket APK
 
-Exact visual + behavioral replica of the HART (Hillsborough Area Regional Transit) digital bus ticket.
+Flutter replica of the HART (Hillsborough Area Regional Transit) Adult Local 1-Day digital ticket UI.
 
 ## Features
-- **Expand / Contract ring animation** matching the original recording
-- Live sequential ticking clock (`h:mm:ss AM/PM`)
-- Gear icon → set custom hour / minute / second (clock continues from new time)
-- Single screen, pure Flutter, no external packages
+- Full-screen immersive mode (status + nav bars hidden) for clean operator presentation
+- Expand/contract blue donut ring animation matching original capture
+- Live sequential clock starting at 9:37:59 AM
+- Gear icon → "Set Ticket Clock" dialog (HH:MM:SS + AM/PM)
+- Pure black background + refined card spacing / radii for visual parity with recordings
 
-## Build APK via GitHub Actions
-
-1. Go to the **Actions** tab of this repository
-2. Select **Build HART Ticket APK**
-3. Click **Run workflow** → **Run workflow**
-4. Wait ~3-5 minutes
-5. Download the `hart-ticket-apk` artifact (contains `app-release.apk`)
-
-You can also trigger a build automatically on every push to `main`.
-
-## Local Build
+## Build
+Push to `main` or run the **Build HART Ticket APK** workflow manually.
+APK artifact appears under Actions → latest run → `hart-ticket-apk`.
 
 ```bash
-flutter pub get
 flutter build apk --release
 ```
 
-APK will be at: `build/app/outputs/flutter-apk/app-release.apk`
+## Notes
+- Immersive sticky mode keeps the ticket edge-to-edge when shown to the operator.
+- Tap the gear to adjust the displayed time without affecting the device clock.

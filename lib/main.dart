@@ -4,10 +4,17 @@ import 'package:flutter/services.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // True fullscreen immersive mode — status + nav bars hidden
+  // so the ticket fills the entire display when showing the operator.
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
     statusBarIconBrightness: Brightness.light,
+    systemNavigationBarColor: Colors.transparent,
+    systemNavigationBarIconBrightness: Brightness.light,
   ));
+
   runApp(const HartApp());
 }
 
@@ -20,7 +27,7 @@ class HartApp extends StatelessWidget {
       title: 'HART Ticket',
       debugShowCheckedModeBanner: false,
       theme: ThemeData.dark().copyWith(
-        scaffoldBackgroundColor: const Color(0xFF121212),
+        scaffoldBackgroundColor: Colors.black,
       ),
       home: const TicketScreen(),
     );
@@ -94,19 +101,26 @@ class _TicketScreenState extends State<TicketScreen>
     bool isPm = _displayedTime.hour >= 12;
 
     final hCtrl = TextEditingController(text: currentHour.toString());
-    final mCtrl = TextEditingController(text: currentMin.toString().padLeft(2, '0'));
-    final sCtrl = TextEditingController(text: currentSec.toString().padLeft(2, '0'));
+    final mCtrl =
+        TextEditingController(text: currentMin.toString().padLeft(2, '0'));
+    final sCtrl =
+        TextEditingController(text: currentSec.toString().padLeft(2, '0'));
 
     showDialog(
       context: context,
+      barrierColor: Colors.black54,
       builder: (context) {
         return StatefulBuilder(
           builder: (context, setDialogState) {
             return AlertDialog(
               backgroundColor: const Color(0xFF1E2229),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20)),
               title: const Text('Set Ticket Clock',
-                  style: TextStyle(color: Colors.white, fontSize: 18)),
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600)),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -160,11 +174,15 @@ class _TicketScreenState extends State<TicketScreen>
               actions: [
                 TextButton(
                   onPressed: () => Navigator.pop(context),
-                  child: const Text('Cancel', style: TextStyle(color: Colors.grey)),
+                  child: const Text('Cancel',
+                      style: TextStyle(color: Colors.grey)),
                 ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF1F3A60),
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
                   ),
                   onPressed: () {
                     int h = int.tryParse(hCtrl.text) ?? 12;
@@ -185,8 +203,7 @@ class _TicketScreenState extends State<TicketScreen>
                     });
                     Navigator.pop(context);
                   },
-                  child: const Text('Set Time',
-                      style: TextStyle(color: Colors.white)),
+                  child: const Text('Set Time'),
                 ),
               ],
             );
@@ -225,205 +242,205 @@ class _TicketScreenState extends State<TicketScreen>
 
   @override
   Widget build(BuildContext context) {
+    // Full-bleed black canvas — no SafeArea so the ticket can occupy
+    // the entire physical display when system UI is hidden.
     return Scaffold(
-      backgroundColor: const Color(0xFF121212),
-      body: SafeArea(
-        child: Center(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Top White Card
-                Container(
-                  width: double.infinity,
-                  constraints: const BoxConstraints(maxWidth: 380),
-                  padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(24),
-                  ),
-                  child: Column(
-                    children: [
-                      // Header
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'HART',
-                                style: TextStyle(
-                                  color: Color(0xFFD0D0D0),
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.w400,
-                                  letterSpacing: 0.5,
-                                ),
-                              ),
-                              SizedBox(height: 2),
-                              Text(
-                                'Show operator your ticket',
-                                style: TextStyle(
-                                  color: Color(0xFFC0C0C0),
-                                  fontSize: 14,
-                                ),
-                              ),
-                            ],
-                          ),
-                          IconButton(
-                            icon: const Icon(Icons.settings,
-                                color: Color(0xFFD0D0D0), size: 24),
-                            onPressed: _openTimeDialog,
-                            padding: EdgeInsets.zero,
-                            constraints: const BoxConstraints(),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 32),
-
-                      // Carbon-copy Expand/Contract Donut Ring
-                      SizedBox(
-                        width: 210,
-                        height: 210,
-                        child: Stack(
-                          alignment: Alignment.center,
+      backgroundColor: Colors.black,
+      body: Center(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 28),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Top White Card
+              Container(
+                width: double.infinity,
+                constraints: const BoxConstraints(maxWidth: 380),
+                padding: const EdgeInsets.fromLTRB(22, 18, 22, 26),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(24),
+                ),
+                child: Column(
+                  children: [
+                    // Header
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            // Outer light gray ring (visible when blue contracts)
-                            Container(
-                              width: 198,
-                              height: 198,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                  color: const Color(0xFFD0D4DA),
-                                  width: 10,
+                            Text(
+                              'HART',
+                              style: TextStyle(
+                                color: Color(0xFFD0D0D0),
+                                fontSize: 22,
+                                fontWeight: FontWeight.w400,
+                                letterSpacing: 0.5,
+                              ),
+                            ),
+                            SizedBox(height: 2),
+                            Text(
+                              'Show operator your ticket',
+                              style: TextStyle(
+                                color: Color(0xFFC0C0C0),
+                                fontSize: 14,
+                              ),
+                            ),
+                          ],
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.settings,
+                              color: Color(0xFFD0D0D0), size: 24),
+                          onPressed: _openTimeDialog,
+                          padding: EdgeInsets.zero,
+                          constraints: const BoxConstraints(),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 30),
+
+                    // Carbon-copy Expand/Contract Donut Ring
+                    SizedBox(
+                      width: 210,
+                      height: 210,
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          // Outer light gray ring (visible when blue contracts)
+                          Container(
+                            width: 198,
+                            height: 198,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: const Color(0xFFD0D4DA),
+                                width: 10,
+                              ),
+                            ),
+                          ),
+                          // Blue ring that expands / contracts
+                          ScaleTransition(
+                            scale: _pulseAnimation,
+                            child: CustomPaint(
+                              size: const Size(210, 210),
+                              painter: RingPainter(),
+                            ),
+                          ),
+                          // Center white circle + HART logo
+                          Container(
+                            width: 96,
+                            height: 96,
+                            decoration: const BoxDecoration(
+                              color: Colors.white,
+                              shape: BoxShape.circle,
+                            ),
+                            child: Center(
+                              child: Container(
+                                width: 58,
+                                height: 40,
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFF1D3F72),
+                                  borderRadius: BorderRadius.circular(5),
                                 ),
-                              ),
-                            ),
-                            // Blue ring that expands / contracts
-                            ScaleTransition(
-                              scale: _pulseAnimation,
-                              child: CustomPaint(
-                                size: const Size(210, 210),
-                                painter: RingPainter(),
-                              ),
-                            ),
-                            // Center white circle + HART logo
-                            Container(
-                              width: 96,
-                              height: 96,
-                              decoration: const BoxDecoration(
-                                color: Colors.white,
-                                shape: BoxShape.circle,
-                              ),
-                              child: Center(
-                                child: Container(
-                                  width: 58,
-                                  height: 40,
-                                  decoration: BoxDecoration(
-                                    color: const Color(0xFF1D3F72),
-                                    borderRadius: BorderRadius.circular(5),
-                                  ),
-                                  child: const Center(
-                                    child: Text(
-                                      'HART',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w900,
-                                        fontSize: 14,
-                                        letterSpacing: -0.4,
-                                      ),
+                                child: const Center(
+                                  child: Text(
+                                    'HART',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w900,
+                                      fontSize: 14,
+                                      letterSpacing: -0.4,
                                     ),
                                   ),
                                 ),
                               ),
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                      const SizedBox(height: 32),
+                    ),
+                    const SizedBox(height: 30),
 
-                      // Live Clock
-                      Text(
-                        _formatTime(_displayedTime),
-                        style: const TextStyle(
-                          color: Color(0xFF222222),
-                          fontSize: 32,
-                          fontWeight: FontWeight.w500,
-                          letterSpacing: 0.5,
-                        ),
+                    // Live Clock
+                    Text(
+                      _formatTime(_displayedTime),
+                      style: const TextStyle(
+                        color: Color(0xFF222222),
+                        fontSize: 32,
+                        fontWeight: FontWeight.w500,
+                        letterSpacing: 0.5,
                       ),
-                      const SizedBox(height: 20),
+                    ),
+                    const SizedBox(height: 20),
 
-                      // Local Bus button
-                      Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.symmetric(vertical: 14),
-                        decoration: BoxDecoration(
-                          color: Colors.black,
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                        child: const Center(
-                          child: Text(
-                            'Local Bus',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 20,
-                              fontWeight: FontWeight.w700,
-                            ),
+                    // Local Bus button
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      decoration: BoxDecoration(
+                        color: Colors.black,
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      child: const Center(
+                        child: Text(
+                          'Local Bus',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 20,
+                            fontWeight: FontWeight.w700,
                           ),
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
+              ),
 
-                const SizedBox(height: 12),
+              const SizedBox(height: 14),
 
-                // Bottom Dark Card
-                Container(
-                  width: double.infinity,
-                  constraints: const BoxConstraints(maxWidth: 380),
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF23262B),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: const Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Tampa, FL',
-                        style: TextStyle(
-                          color: Color(0xFFA0A5B1),
-                          fontSize: 13,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      SizedBox(height: 4),
-                      Text(
-                        'Adult Local 1 Day',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      SizedBox(height: 12),
-                      Text(
-                        'Expires tomorrow, 3:00 AM',
-                        style: TextStyle(
-                          color: Color(0xFFC0C5D0),
-                          fontSize: 14,
-                        ),
-                      ),
-                    ],
-                  ),
+              // Bottom Dark Card
+              Container(
+                width: double.infinity,
+                constraints: const BoxConstraints(maxWidth: 380),
+                padding: const EdgeInsets.fromLTRB(20, 18, 20, 18),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF23262B),
+                  borderRadius: BorderRadius.circular(20),
                 ),
-              ],
-            ),
+                child: const Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Tampa, FL',
+                      style: TextStyle(
+                        color: Color(0xFFA0A5B1),
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    SizedBox(height: 4),
+                    Text(
+                      'Adult Local 1 Day',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Text(
+                      'Expires tomorrow, 3:00 AM',
+                      style: TextStyle(
+                        color: Color(0xFFC0C5D0),
+                        fontSize: 14,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
       ),
